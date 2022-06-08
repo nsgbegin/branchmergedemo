@@ -1,3 +1,35 @@
+def mergeBeforeBuild() {
+
+  // Pull the source and test a merge
+  try {
+    def sourceScmCheck = checkout changelog: true, poll: true, scm: [
+      $class: 'GitSCM',
+      branches: [[name: "origin/$sourceBranch" ]],
+      doGenerateSubmoduleConfigurations: false,
+      extensions: [[
+        $class: 'PreBuildMerge',
+        options: [
+          fastForwardMode: 'FF',
+          mergeRemote: 'origin',
+          mergeStrategy: 'default',
+          mergeTarget: "${env.target_branch}"]],
+        [$class: 'UserIdentity',
+          email: 'jenkins@jenkins.com',
+          name: 'jenkins'
+      ]],
+      submoduleCfg: [],
+      userRemoteConfigs: [[
+        credentialsId: 'githubCredentials',
+        name: 'origin',
+        url: "$repoUrl"
+      ]]
+    ]
+  } catch (error) {
+    currentBuild.result = 'FAILURE'
+    echo "ERROR: ${error}"
+    sh 'false'
+  }
+}
 node
   {
   stage('checkout')
@@ -25,6 +57,10 @@ node
       
     sh """chmod +x HelloWorld.sh 
     ./HelloWorld.sh"""
+    scripts{
+      mergeBeforeBuild()
+        
+      }
  
     }
 }
