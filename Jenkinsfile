@@ -13,13 +13,10 @@ def mergeBeforeBuild() {
           mergeRemote: 'origin',
           mergeStrategy: 'default',
           mergeTarget: "${env.target_branch}"]],
-        [$class: 'UserIdentity',
-          email: 'jenkins@jenkins.com',
-          name: 'jenkins'
-      ]],
+      ],
       submoduleCfg: [],
       userRemoteConfigs: [[
-        credentialsId: 'githubCredentials',
+        credentialsId: 'gittoeken',
         name: 'origin',
         url: "$repoUrl"
       ]]
