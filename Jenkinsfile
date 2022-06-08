@@ -54,7 +54,7 @@ node
       
     sh """chmod +x HelloWorld.sh 
     ./HelloWorld.sh"""
-    scripts{
+    script{
       mergeBeforeBuild()
         
       }
